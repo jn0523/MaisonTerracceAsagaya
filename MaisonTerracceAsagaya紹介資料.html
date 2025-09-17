@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maison Terracce Asagaya 物件紹介</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral -->
+    <!-- Application Structure Plan: To align with the request for a structure faithful to the source document for a professional audience (real estate agents), the application is reorganized into three core sections: 物件概要 (Overview), 立地 (Location), and 設備・特徴 (Features). This mirrors the source markdown. The hero section is made more direct. Interactive elements like charts and a floor plan feature-toggle are retained within this new structure to enhance data presentation while maintaining a professional, information-first layout. This design facilitates efficient information retrieval for agents. -->
+    <!-- Visualization & Content Choices: 
+    - Report Info: Property Overview (Name, Address, Size, etc.) -> Goal: Inform -> Viz: A clear table and floor plan image with interactive descriptions -> Interaction: Buttons to toggle floor-specific feature text -> Justification: Presents foundational data clearly and links features directly to the visual plan, aiding agent's understanding. -> Method: HTML/Tailwind, Vanilla JS.
+    - Report Info: Location Details (Asagaya features, amenities, station access) -> Goal: Compare/Analyze -> Viz: Bullet points for qualitative features, side-by-side bar charts for quantitative time data -> Interaction: Hover tooltips on charts -> Justification: Separates qualitative context from quantitative data, which is best visualized for quick comparison of travel/walk times. -> Library: Chart.js.
+    - Report Info: Equipment/Features List -> Goal: Organize/Inform -> Viz: A detailed, categorized list mirroring the source document's structure ("Common", "Other") -> Interaction: None -> Justification: Provides a comprehensive, easy-to-scan checklist of all amenities, which is more useful for agents than a simplified marketing grid. -> Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #FDFDFB;
+            color: #383838;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .feature-list li {
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #d97706; 
+        }
+    </style>
+</head>
+<body>
+
+    <header class="bg-[#FDFDFB]/80 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-lg font-bold text-gray-800">Maison Terracce Asagaya</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#overview" class="text-gray-600 hover:text-gray-900 transition">物件概要</a>
+                <a href="#location" class="text-gray-600 hover:text-gray-900 transition">立地</a>
+                <a href="#features" class="text-gray-600 hover:text-gray-900 transition">設備・特徴</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="py-12 md:py-16 text-center bg-amber-50">
+            <div class="container mx-auto px-6">
+                <h2 class="text-2xl md:text-4xl font-bold text-gray-800 mb-2">新築物件 ご紹介資料</h2>
+                <p class="text-xl md:text-2xl text-gray-600">Maison Terracce Asagaya</p>
+            </div>
+        </section>
+
+        <section id="overview" class="py-16 md:py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">物件概要</h2>
+                </div>
+                 <div class="max-w-4xl mx-auto bg-white shadow-sm border border-gray-100 rounded-lg overflow-hidden mb-12">
+                    <table class="w-full text-left">
+                        <tbody>
+                            <tr class="border-b"><th class="p-4 bg-amber-50 w-1/3">物件名称</th><td class="p-4">Maison Terracce Asagaya (メゾン テラス 阿佐ヶ谷)</td></tr>
+                            <tr class="border-b"><th class="p-4 bg-amber-50">所在地</th><td class="p-4">東京都杉並区阿佐谷南1-26-1</td></tr>
+                            <tr class="border-b"><th class="p-4 bg-amber-50">建物</th><td class="p-4">2階建て長屋 3LDK × 2戸 (両戸とも専有面積80㎡以上・南西向き)</td></tr>
+                            <tr class="border-b"><th class="p-4 bg-amber-50">構造</th><td class="p-4">ALC造（軽量鉄骨） 旭化成ホームズ(株)施工 ヘーベルメゾン</td></tr>
+                            <tr class="border-b"><th class="p-4 bg-amber-50">入居可能時期</th><td class="p-4">2025年11月下旬 予定</td></tr>
+                            <tr><th class="p-4 bg-amber-50">ターゲット</th><td class="p-4">保育園/幼稚園・小学生の子を持つファミリー世帯</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-8 items-center mt-12">
+                     <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <img id="floor-plan-image" src="https://placehold.co/800x600/ffffff/333333?text=1F+Floor+Plan" alt="間取り図" class="rounded w-full object-contain">
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">間取りの特徴</h3>
+                        <div class="flex space-x-2 mb-4 border-b">
+                            <button id="btn-1f" class="plan-btn flex-1 py-3 px-2 text-center font-semibold text-amber-600 border-b-2 border-amber-600">1階</button>
+                            <button id="btn-2f" class="plan-btn flex-1 py-3 px-2 text-center font-semibold text-gray-500 border-b-2 border-transparent">2階</button>
+                            <button id="btn-flex" class="plan-btn flex-1 py-3 px-2 text-center font-semibold text-gray-500 border-b-2 border-transparent">可変性</button>
+                        </div>
+                        <div id="plan-description" class="p-4 bg-gray-50 rounded-lg min-h-[200px]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="location" class="py-16 md:py-20 bg-amber-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">立地</h2>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-12">
+                    <h3 class="font-bold text-xl mb-4 border-b pb-2">阿佐ヶ谷の特徴</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>夜の店が少なく、アクセスの割に治安が良い</li>
+                                <li>落ち着いている雰囲気・トラブルが少ない</li>
+                                <li>下町感がある（七夕祭り、高円寺阿波おどりも徒歩圏内）</li>
+                            </ul>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <img src="https://imgur.com/6Ll8HT1.jpeg" alt="阿佐ヶ谷の街並み" class="rounded-lg object-cover w-full h-full">
+                            <img src="https://i.imgur.com/4HmInAJ.jpeg" alt="阿佐谷七夕まつり" class="rounded-lg object-cover w-full h-full">
+                             <img src="https://i.imgur.com/ORvKcu5.jpeg" alt="阿佐ヶ谷駅" class="rounded-lg object-cover w-full h-full">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-4 border-b pb-2">周辺生活スポット</h3>
+                        <p class="text-sm text-gray-500 mb-4">子育て世帯に嬉しい施設が徒歩圏内に揃っています。</p>
+                        <div class="chart-container">
+                            <canvas id="walkTimeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="font-bold text-xl mb-4 border-b pb-2">主要駅へのアクセス</h3>
+                        <p class="text-sm text-gray-500 mb-4">2駅2路線利用可能で都心への通勤・通学も快適です。</p>
+                        <div class="chart-container">
+                            <canvas id="trainTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center max-w-3xl mx-auto">
+                    <a href="https://maps.app.goo.gl/CFNkyN3jeYtv5Dkk8" target="_blank" rel="noopener noreferrer" class="inline-block bg-amber-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-amber-600 transition">Google Mapで周辺を確認</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-16 md:py-20">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">設備・特徴</h2>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                    <h3 class="text-xl font-bold mb-4 border-b pb-2">共通設備</h3>
+                    <div class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                        <ul class="space-y-2 text-gray-700 feature-list">
+                            <li class="font-semibold">システムキッチン (ペニンシュラキッチン横幅240cm)</li>
+                            <li>ガスコンロ設置済 (3口)</li>
+                            <li class="font-semibold">食器洗い乾燥機付</li>
+                            <li>バストイレ別</li>
+                            <li class="font-semibold">おそうじ浴槽（自動洗浄浴槽）</li>
+                            <li>追い焚き機能</li>
+                            <li>浴室乾燥機</li>
+                            <li>シャワー付洗面化粧台</li>
+                            <li>洗面所独立</li>
+                        </ul>
+                        <ul class="space-y-2 text-gray-700 feature-list">
+                             <li>温水洗浄便座</li>
+                            <li>室内洗濯機置場</li>
+                            <li>TVモニタ付インターホン</li>
+                            <li>エアコン</li>
+                            <li>ウォークインクローゼット</li>
+                            <li>シューズボックス</li>
+                             <li class="font-semibold">インターネット使用料無料 (NURO光 2Gbpsで検討中)</li>
+                            <li>宅配ボックス</li>
+                            <li>駐輪場あり (各戸1台)</li>
+                        </ul>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 border-b pb-2 mt-10">その他特徴</h3>
+                     <ul class="space-y-3 text-gray-700">
+                        <li>
+                            <strong class="text-amber-700">■ 可動間仕切棚:</strong>
+                            <p class="pl-4">北側居室は可動間仕切り棚で間取り調整が可能。居室の広さを調整したり、1部屋として広く利用したりとライフステージに合わせて変更できます。</p>
+                        </li>
+                         <li>
+                            <strong class="text-amber-700">■ スライドスクリーン:</strong>
+                            <p class="pl-4">南西側居室は乳白色のスライドスクリーンによる仕切り。個室としても、リビングの拡張スペースとしても柔軟に利用可能です。</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chartDefaultOptions = {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    x: { beginAtZero: true, grid: { color: '#F0F0F0' }, ticks: { callback: value => value + '分' } },
+                    y: { grid: { display: false } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: context => context.raw + '分' } }
+                }
+            };
+
+            const walkTimeCtx = document.getElementById('walkTimeChart').getContext('2d');
+            new Chart(walkTimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['保育園', '幼稚園', '公立小学校', 'スーパー', '阿佐ヶ谷駅', '南阿佐ケ谷駅', '公立中学校'],
+                    datasets: [{
+                        data: [2, 3, 4, 6, 7, 8, 9],
+                        backgroundColor: 'rgba(217, 119, 6, 0.7)',
+                        borderColor: 'rgba(217, 119, 6, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { ...chartDefaultOptions }
+            });
+
+            const trainTimeCtx = document.getElementById('trainTimeChart').getContext('2d');
+            new Chart(trainTimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['吉祥寺駅', '新宿駅', '市ヶ谷駅', '東京駅', '霞ヶ関駅'],
+                    datasets: [{
+                        data: [16, 19, 32, 33, 36],
+                        backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { ...chartDefaultOptions }
+            });
+            
+            const planImage = document.getElementById('floor-plan-image');
+            const planDesc = document.getElementById('plan-description');
+            const planButtons = document.querySelectorAll('.plan-btn');
+
+            const floorPlanData = {
+                '1f': {
+                    image: 'https://imgur.com/RsMyYkS.jpeg',
+                    description: `
+                        <h4 class="font-bold text-lg mb-2">リビングと繋がるウッドデッキ</h4>
+                        <p class="text-gray-700">リビングの先には約6畳の広々としたウッドデッキを設置。天気の良い日にはアウトドアリビングとして、お子様の遊び場や家族の憩いの場としてお使いいただけます。</p>
+                    `
+                },
+                '2f': {
+                    image: 'https://imgur.com/zY8eICF.jpeg',
+                    description: `
+                        <h4 class="font-bold text-lg mb-2">プライバシーと機能性を両立</h4>
+                        <p class="text-gray-700">脱衣所と洗面台を分離した設計で、家族の朝の準備がスムーズに。奥行き1.8mの広々としたベランダは、洗濯物干しはもちろん、ガーデニングなども楽しめます。</p>
+                    `
+                },
+                'flex': {
+                    image: 'https://placehold.co/800x600/ffffff/333333?text=Coming+Soon',
+                    description: `
+                        <h4 class="font-bold text-lg mb-2">成長に寄り添うフレキシブルな空間</h4>
+                        <p class="text-gray-700">北側居室は可動間仕切り棚で、お子様の成長に合わせて部屋の広さを変えたり、一つの大きな部屋として使ったりと、自在に空間を調整可能です。南西側の居室もスライドスクリーンで仕切られており、個室としてもリビングの延長としても活用できます。</p>
+                    `
+                }
+            };
+            
+            const setActiveButton = (activeButton) => {
+                planButtons.forEach(btn => {
+                    btn.classList.remove('text-amber-600', 'border-amber-600');
+                    btn.classList.add('text-gray-500', 'border-transparent');
+                });
+                activeButton.classList.add('text-amber-600', 'border-amber-600');
+                activeButton.classList.remove('text-gray-500', 'border-transparent');
+            };
+
+            const updatePlanView = (key, buttonElement) => {
+                planImage.src = floorPlanData[key].image;
+                planDesc.innerHTML = floorPlanData[key].description;
+                setActiveButton(buttonElement);
+            };
+            
+            const btn1f = document.getElementById('btn-1f');
+            const btn2f = document.getElementById('btn-2f');
+            const btnFlex = document.getElementById('btn-flex');
+
+            btn1f.addEventListener('click', () => updatePlanView('1f', btn1f));
+            btn2f.addEventListener('click', () => updatePlanView('2f', btn2f));
+            btnFlex.addEventListener('click', () => updatePlanView('flex', btnFlex));
+
+            updatePlanView('1f', btn1f);
+        });
+    </script>
+</body>
+</html>
+
